@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import type { Listing } from '../types';
 import { getListings } from '../api';
 import ListingCard from '../components/ListingCard';
 import { useAuth } from '../context/AuthContext';
 
-const CATEGORIES = ['', 'furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'other'];
+const CATEGORIES = ['', 'furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['', 'new', 'like new', 'good', 'fair', 'poor'];
 
 export default function Listings() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     city: '',
-    category: '',
+    category: searchParams.get('category') || '',
     condition: '',
     min_price: '',
     max_price: '',

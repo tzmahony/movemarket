@@ -38,6 +38,15 @@ export default function Messages() {
     }
   }, [activeUserId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-refresh messages every 8 seconds when a conversation is open
+  useEffect(() => {
+    if (!activeUserId) return;
+    const interval = setInterval(() => {
+      getMessages(activeUserId).then((r) => setMessages(r.data)).catch(() => {});
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [activeUserId]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

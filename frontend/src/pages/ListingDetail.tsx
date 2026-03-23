@@ -13,6 +13,7 @@ const categoryGradients: Record<string, string> = {
   books: 'from-yellow-400 to-yellow-600',
   sports: 'from-red-400 to-red-600',
   decor: 'from-teal-400 to-teal-600',
+  boxes: 'from-amber-400 to-amber-600',
   other: 'from-gray-400 to-gray-600',
 };
 

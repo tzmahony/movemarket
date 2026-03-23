@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createListing } from '../api';
 
-const CATEGORIES = ['furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'other'];
+const CATEGORIES = ['furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['new', 'like new', 'good', 'fair', 'poor'];
 
 export default function CreateListing() {

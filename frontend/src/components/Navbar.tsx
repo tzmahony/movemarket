@@ -1,11 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getConversations } from '../api';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) { setUnreadCount(0); return; }
+    const fetchUnread = () => {
+      getConversations()
+        .then((r) => setUnreadCount(r.data.reduce((s, c) => s + c.unread_count, 0)))
+        .catch(() => {});
+    };
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -34,8 +48,13 @@ export default function Navbar() {
                 Move Board
               </Link>
               {user && (
-                <Link to="/messages" className="text-gray-600 hover:text-indigo-600 transition-colors font-medium">
+                <Link to="/messages" className="relative text-gray-600 hover:text-indigo-600 transition-colors font-medium">
                   Messages
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1.5 -right-4 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold leading-none">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
                 </Link>
               )}
             </div>

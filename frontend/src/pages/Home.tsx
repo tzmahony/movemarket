@@ -70,6 +70,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Moving Boxes Banner */}
+      <section className="py-10 bg-amber-50 border-y border-amber-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <span className="text-5xl">📦</span>
+            <div>
+              <h2 className="text-xl font-bold text-amber-900">Moving Boxes — Free or Cheap</h2>
+              <p className="text-amber-700 text-sm mt-0.5">
+                Got boxes from your move? List them. Moving in? Grab someone else's.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-3 shrink-0">
+            <Link
+              to="/listings?category=boxes"
+              className="bg-amber-500 text-white font-semibold px-5 py-2.5 rounded-lg hover:bg-amber-600 transition-colors text-sm"
+            >
+              Browse Boxes
+            </Link>
+            <Link
+              to="/listings/new"
+              className="bg-white text-amber-700 border border-amber-300 font-semibold px-5 py-2.5 rounded-lg hover:bg-amber-50 transition-colors text-sm"
+            >
+              List My Boxes
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Recent Listings */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
