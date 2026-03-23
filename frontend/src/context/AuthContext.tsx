@@ -49,6 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await api.register(email, password, name);
     const newToken = res.data.access_token;
     localStorage.setItem('token', newToken);
+    localStorage.setItem('onboarding_pending', 'true');
     setToken(newToken);
   };
 

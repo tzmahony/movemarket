@@ -7,6 +7,7 @@ export interface User {
   move_date: string | null;
   bio: string | null;
   phone: string | null;
+  avatar_url: string | null;
   created_at: string;
 }
 
@@ -35,6 +36,7 @@ export interface Bundle {
   description: string;
   discount_percentage: number;
   city: string;
+  image_url: string | null;
   created_at: string;
   user: User;
   listings: Listing[];
@@ -52,6 +54,7 @@ export interface MoveAnnouncement {
   message: string | null;
   looking_for: string | null;
   budget_range: string | null;
+  image_url: string | null;
   created_at: string;
   user: User;
 }

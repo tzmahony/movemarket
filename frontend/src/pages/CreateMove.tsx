@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createMove } from '../api';
+import ImageUpload from '../components/ImageUpload';
 
 const CATEGORIES = ['furniture', 'electronics', 'kitchen', 'bedroom', 'bathroom', 'office', 'books', 'clothing', 'sports', 'other'];
 
@@ -17,6 +18,7 @@ export default function CreateMove() {
     message: '',
     looking_for: [] as string[],
     budget_range: '',
+    image_url: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -56,6 +58,7 @@ export default function CreateMove() {
       if (form.message) data.message = form.message;
       if (form.looking_for.length > 0) data.looking_for = form.looking_for.join(', ');
       if (form.budget_range) data.budget_range = form.budget_range;
+      if (form.image_url) data.image_url = form.image_url;
 
       await createMove(data);
       navigate('/moves');
@@ -151,6 +154,15 @@ export default function CreateMove() {
               onChange={(e) => update('message', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-y"
               placeholder="Tell people what you're looking for or selling, any details about your move..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Photo (optional)</label>
+            <ImageUpload
+              value={form.image_url}
+              onChange={(url) => update('image_url', url)}
+              label="Add a photo — yourself, your packing, anything!"
             />
           </div>
 

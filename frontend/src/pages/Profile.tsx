@@ -4,6 +4,7 @@ import type { User, Listing, Bundle } from '../types';
 import { getUser, getListings, getBundles, getSavedListings, updateProfile } from '../api';
 import ListingCard from '../components/ListingCard';
 import BundleCard from '../components/BundleCard';
+import ImageUpload from '../components/ImageUpload';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 
@@ -160,9 +161,23 @@ export default function Profile() {
           </form>
         ) : (
           <div className="flex items-start gap-5">
-            <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-2xl shrink-0">
-              {profileUser.name.charAt(0).toUpperCase()}
-            </div>
+            {isOwnProfile ? (
+              <ImageUpload
+                value={profileUser.avatar_url}
+                onChange={async (url) => {
+                  await updateProfile({ avatar_url: url } as any);
+                  await refreshUser();
+                  const res = await getUser(Number(id));
+                  setProfileUser(res.data);
+                }}
+                shape="circle"
+                label=""
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-2xl shrink-0">
+                {profileUser.name.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-3">
                 <div>

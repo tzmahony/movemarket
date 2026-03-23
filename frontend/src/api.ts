@@ -1,6 +1,18 @@
 import axios from 'axios';
 import type { User, Listing, Bundle, MoveAnnouncement, Message, Conversation } from './types';
 
+export const uploadFile = (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const token = localStorage.getItem('token');
+  return axios.post<{ url: string }>('/uploads/', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+};
+
 const api = axios.create({
   baseURL: '/api',
 });

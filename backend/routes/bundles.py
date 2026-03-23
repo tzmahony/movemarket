@@ -25,6 +25,7 @@ def _bundle_to_response(bundle: Bundle, current_user: Optional[User], db: Sessio
         description=bundle.description,
         discount_percentage=bundle.discount_percentage,
         city=bundle.city,
+        image_url=bundle.image_url,
         created_at=bundle.created_at,
         listings=listing_responses,
         total_price=total_price,
@@ -77,6 +78,7 @@ def create_bundle(
         description=bundle_in.description,
         discount_percentage=bundle_in.discount_percentage,
         city=bundle_in.city,
+        image_url=bundle_in.image_url,
     )
     bundle.listings = listings
     db.add(bundle)

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getListings, createBundle } from '../api';
 import type { Listing } from '../types';
+import ImageUpload from '../components/ImageUpload';
 
 export default function CreateBundle() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export default function CreateBundle() {
     description: '',
     city: user?.city || '',
     discount_percentage: 10,
+    image_url: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,10 +62,12 @@ export default function CreateBundle() {
     }
     setLoading(true);
     try {
-      const res = await createBundle({
+      const payload: any = {
         ...form,
         listing_ids: Array.from(selectedIds),
-      });
+      };
+      if (!form.image_url) delete payload.image_url;
+      const res = await createBundle(payload);
       navigate(`/bundles/${res.data.id}`);
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to create bundle.');
@@ -111,6 +115,15 @@ export default function CreateBundle() {
               onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-y"
               placeholder="Describe what's included in this bundle..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Bundle Cover Photo</label>
+            <ImageUpload
+              value={form.image_url}
+              onChange={(url) => setForm((p) => ({ ...p, image_url: url }))}
+              label="Upload a cover photo for this bundle"
             />
           </div>
 

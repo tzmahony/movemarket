@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createListing } from '../api';
+import ImageUpload from '../components/ImageUpload';
 
 const CATEGORIES = ['furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['new', 'like new', 'good', 'fair', 'poor'];
@@ -153,13 +154,11 @@ export default function CreateListing() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-            <input
-              type="url"
+            <label className="block text-sm font-medium text-gray-700 mb-1">Photo</label>
+            <ImageUpload
               value={form.image_url}
-              onChange={(e) => update('image_url', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder="https://..."
+              onChange={(url) => update('image_url', url)}
+              label="Upload a photo of your item"
             />
           </div>
 

@@ -67,12 +67,21 @@ export default function MoveCard({ move }: Props) {
           )}
         </div>
 
-        <Link
-          to={`/messages?user=${move.user_id}`}
-          className="ml-4 shrink-0 bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          Contact
-        </Link>
+        <div className="ml-4 shrink-0 flex flex-col items-end gap-2">
+          {move.image_url && (
+            <img
+              src={move.image_url}
+              alt="Move photo"
+              className="w-16 h-16 rounded-lg object-cover shrink-0 mt-1"
+            />
+          )}
+          <Link
+            to={`/messages?user=${move.user_id}`}
+            className="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            Contact
+          </Link>
+        </div>
       </div>
     </div>
   );

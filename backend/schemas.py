@@ -23,6 +23,7 @@ class UserUpdate(BaseModel):
     move_date: Optional[date] = None
     bio: Optional[str] = None
     phone: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 
 class UserResponse(BaseModel):
@@ -36,6 +37,7 @@ class UserResponse(BaseModel):
     move_date: Optional[date] = None
     bio: Optional[str] = None
     phone: Optional[str] = None
+    avatar_url: Optional[str] = None
     created_at: datetime
 
 
@@ -101,6 +103,7 @@ class BundleCreate(BaseModel):
     discount_percentage: int = 10
     city: str
     listing_ids: list[int]
+    image_url: Optional[str] = None
 
 
 class BundleResponse(BaseModel):
@@ -112,6 +115,7 @@ class BundleResponse(BaseModel):
     description: str
     discount_percentage: int
     city: str
+    image_url: Optional[str] = None
     created_at: datetime
     listings: list[ListingResponse]
     total_price: float
@@ -129,6 +133,7 @@ class MoveCreate(BaseModel):
     message: Optional[str] = None
     looking_for: Optional[str] = None
     budget_range: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class MoveResponse(BaseModel):
@@ -143,6 +148,7 @@ class MoveResponse(BaseModel):
     message: Optional[str] = None
     looking_for: Optional[str] = None
     budget_range: Optional[str] = None
+    image_url: Optional[str] = None
     created_at: datetime
     user: UserResponse
 

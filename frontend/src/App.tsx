@@ -1,6 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import OnboardingModal from './components/OnboardingModal';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -17,8 +19,18 @@ import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
 
 export default function App() {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem('onboarding_pending') === 'true') {
+      localStorage.removeItem('onboarding_pending');
+      setShowOnboarding(true);
+    }
+  }, []);
+
   return (
     <AuthProvider>
+      {showOnboarding && <OnboardingModal onComplete={() => setShowOnboarding(false)} />}
       <div className="min-h-screen bg-gray-50">
         <Navbar />
         <Routes>

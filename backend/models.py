@@ -27,6 +27,7 @@ class User(Base):
     move_date = Column(Date, nullable=True)
     bio = Column(Text, nullable=True)
     phone = Column(String(20), nullable=True)
+    avatar_url = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     listings = relationship("Listing", back_populates="user")
@@ -66,6 +67,7 @@ class Bundle(Base):
     description = Column(Text, nullable=False)
     discount_percentage = Column(Integer, default=10)
     city = Column(String(100), nullable=False)
+    image_url = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="bundles")
@@ -84,6 +86,7 @@ class MoveAnnouncement(Base):
     message = Column(Text, nullable=True)
     looking_for = Column(String(500), nullable=True)
     budget_range = Column(String(50), nullable=True)
+    image_url = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="move_announcements")

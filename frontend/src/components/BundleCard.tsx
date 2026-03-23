@@ -9,8 +9,14 @@ export default function BundleCard({ bundle }: Props) {
   return (
     <Link to={`/bundles/${bundle.id}`} className="block group">
       <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-        <div className="w-full h-36 bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center relative">
-          <span className="text-white text-4xl opacity-80">🎁</span>
+        <div className="relative w-full h-36">
+          {bundle.image_url ? (
+            <img src={bundle.image_url} alt={bundle.title} className="w-full h-36 object-cover" />
+          ) : (
+            <div className="w-full h-36 bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center">
+              <span className="text-white text-4xl opacity-80">🎁</span>
+            </div>
+          )}
           <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
             {bundle.discount_percentage}% OFF
           </span>
