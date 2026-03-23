@@ -4,6 +4,7 @@ import type { Bundle } from '../types';
 import { getBundles } from '../api';
 import BundleCard from '../components/BundleCard';
 import { useAuth } from '../context/AuthContext';
+import CityInput from '../components/CityInput';
 
 export default function Bundles() {
   const { user } = useAuth();
@@ -74,11 +75,10 @@ export default function Bundles() {
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
           />
-          <input
-            type="text"
-            placeholder="City"
+          <CityInput
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={setCity}
+            placeholder="City"
             className="w-40 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
           />
           <button

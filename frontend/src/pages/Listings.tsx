@@ -4,6 +4,7 @@ import type { Listing } from '../types';
 import { getListings } from '../api';
 import ListingCard from '../components/ListingCard';
 import { useAuth } from '../context/AuthContext';
+import CityInput from '../components/CityInput';
 
 const CATEGORIES = ['', 'furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['', 'new', 'like new', 'good', 'fair', 'poor'];
@@ -90,12 +91,11 @@ export default function Listings() {
             onChange={(e) => updateFilter('search', e.target.value)}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
           />
-          <input
-            type="text"
-            placeholder="City"
+          <CityInput
             value={filters.city}
-            onChange={(e) => updateFilter('city', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
+            onChange={(v) => updateFilter('city', v)}
+            placeholder="City"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm w-full"
           />
           <select
             value={filters.category}
