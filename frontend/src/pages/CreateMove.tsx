@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { createMove } from '../api';
 import ImageUpload from '../components/ImageUpload';
 import CityInput from '../components/CityInput';
+import MapPicker from '../components/MapPicker';
 
 const CATEGORIES = ['furniture', 'electronics', 'kitchen', 'bedroom', 'bathroom', 'office', 'books', 'clothing', 'sports', 'other'];
 
@@ -23,6 +24,8 @@ export default function CreateMove() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [mapCoords, setMapCoords] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
 
   if (authLoading) return null;
   if (!user) {
@@ -61,6 +64,7 @@ export default function CreateMove() {
       if (form.looking_for.length > 0) data.looking_for = form.looking_for.join(', ');
       if (form.budget_range) data.budget_range = form.budget_range;
       if (form.image_url) data.image_url = form.image_url;
+      if (mapCoords.lat !== null) { data.latitude = mapCoords.lat; data.longitude = mapCoords.lng!; }
 
       await createMove(data);
       navigate('/moves');
@@ -118,6 +122,22 @@ export default function CreateMove() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">From City</label>
               <CityInput value={form.from_city} onChange={(v) => update('from_city', v)} placeholder="Leaving from..." />
+              <div className="mt-2">
+                <button type="button" onClick={() => setShowMap(s => !s)} className="text-xs text-indigo-600 hover:underline">
+                  {showMap ? 'Hide map' : '+ Pin exact location on map (optional)'}
+                </button>
+                {showMap && (
+                  <div className="mt-2">
+                    <MapPicker
+                      mode="pick"
+                      lat={mapCoords.lat}
+                      lng={mapCoords.lng}
+                      onLocationChange={(lat, lng) => setMapCoords({ lat, lng })}
+                      onClear={() => setMapCoords({ lat: null, lng: null })}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">To City</label>

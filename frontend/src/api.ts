@@ -52,6 +52,9 @@ export interface ListingParams {
   min_price?: number;
   max_price?: number;
   search?: string;
+  lat?: number;
+  lng?: number;
+  radius_km?: number;
   skip?: number;
   limit?: number;
 }
@@ -80,6 +83,9 @@ export const getSavedListings = () => api.get<Listing[]>('/listings/saved/me');
 export interface BundleParams {
   city?: string;
   search?: string;
+  lat?: number;
+  lng?: number;
+  radius_km?: number;
   skip?: number;
   limit?: number;
 }
@@ -102,6 +108,9 @@ export const deleteBundle = (id: number) => api.delete(`/bundles/${id}`);
 export interface MoveParams {
   city?: string;
   move_type?: string;
+  lat?: number;
+  lng?: number;
+  radius_km?: number;
   skip?: number;
   limit?: number;
 }

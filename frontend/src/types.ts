@@ -24,6 +24,8 @@ export interface Listing {
   status: string;
   urgent: boolean;
   move_out_date: string | null;
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
   user: User;
   is_saved: boolean;
@@ -37,6 +39,8 @@ export interface Bundle {
   discount_percentage: number;
   city: string;
   image_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
   user: User;
   listings: Listing[];
@@ -55,6 +59,8 @@ export interface MoveAnnouncement {
   looking_for: string | null;
   budget_range: string | null;
   image_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
   created_at: string;
   user: User;
 }

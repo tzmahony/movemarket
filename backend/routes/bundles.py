@@ -1,3 +1,4 @@
+import math
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -9,6 +10,14 @@ from schemas import BundleCreate, BundleResponse, ListingResponse
 from auth import get_current_user, optional_current_user
 
 router = APIRouter()
+
+
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    R = 6371.0
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    return R * 2 * math.asin(math.sqrt(a))
 
 
 def _bundle_to_response(bundle: Bundle, current_user: Optional[User], db: Session) -> BundleResponse:
@@ -26,6 +35,8 @@ def _bundle_to_response(bundle: Bundle, current_user: Optional[User], db: Sessio
         discount_percentage=bundle.discount_percentage,
         city=bundle.city,
         image_url=bundle.image_url,
+        latitude=bundle.latitude,
+        longitude=bundle.longitude,
         created_at=bundle.created_at,
         listings=listing_responses,
         total_price=total_price,
@@ -38,16 +49,32 @@ def _bundle_to_response(bundle: Bundle, current_user: Optional[User], db: Sessio
 def list_bundles(
     city: Optional[str] = None,
     search: Optional[str] = None,
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    radius_km: Optional[float] = None,
     skip: int = 0,
     limit: int = 20,
     current_user: Optional[User] = Depends(optional_current_user),
     db: Session = Depends(get_db),
 ):
     query = db.query(Bundle)
-    if city:
+    if city and lat is None:
         query = query.filter(Bundle.city.ilike(f"%{city}%"))
     if search:
         query = query.filter(Bundle.title.ilike(f"%{search}%"))
+    if lat is not None and lng is not None and radius_km is not None:
+        delta_lat = radius_km / 111.0
+        delta_lng = radius_km / (111.0 * math.cos(math.radians(lat)))
+        query = query.filter(
+            Bundle.latitude.isnot(None),
+            Bundle.longitude.isnot(None),
+            Bundle.latitude.between(lat - delta_lat, lat + delta_lat),
+            Bundle.longitude.between(lng - delta_lng, lng + delta_lng),
+        )
+        candidates = query.order_by(Bundle.created_at.desc()).all()
+        candidates = [c for c in candidates if _haversine_km(lat, lng, c.latitude, c.longitude) <= radius_km]
+        page = candidates[skip: skip + limit]
+        return [_bundle_to_response(b, current_user, db) for b in page]
     bundles = query.order_by(Bundle.created_at.desc()).offset(skip).limit(limit).all()
     return [_bundle_to_response(b, current_user, db) for b in bundles]
 

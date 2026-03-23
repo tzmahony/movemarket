@@ -45,6 +45,12 @@ def on_startup():
         "ALTER TABLE users ADD COLUMN avatar_url VARCHAR(500)",
         "ALTER TABLE bundles ADD COLUMN image_url VARCHAR(500)",
         "ALTER TABLE move_announcements ADD COLUMN image_url VARCHAR(500)",
+        "ALTER TABLE listings ADD COLUMN latitude REAL",
+        "ALTER TABLE listings ADD COLUMN longitude REAL",
+        "ALTER TABLE bundles ADD COLUMN latitude REAL",
+        "ALTER TABLE bundles ADD COLUMN longitude REAL",
+        "ALTER TABLE move_announcements ADD COLUMN latitude REAL",
+        "ALTER TABLE move_announcements ADD COLUMN longitude REAL",
     ]
     with engine.connect() as conn:
         for sql in migrations:

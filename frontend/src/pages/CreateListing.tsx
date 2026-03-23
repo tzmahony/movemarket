@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { createListing } from '../api';
 import ImageUpload from '../components/ImageUpload';
 import CityInput from '../components/CityInput';
+import MapPicker from '../components/MapPicker';
 
 const CATEGORIES = ['furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['new', 'like new', 'good', 'fair', 'poor'];
@@ -25,6 +26,8 @@ export default function CreateListing() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [mapCoords, setMapCoords] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
 
   if (authLoading) return null;
   if (!user) {
@@ -57,6 +60,7 @@ export default function CreateListing() {
       };
       if (form.image_url) data.image_url = form.image_url;
       if (form.urgent && form.move_out_date) data.move_out_date = form.move_out_date;
+      if (mapCoords.lat !== null) { data.latitude = mapCoords.lat; data.longitude = mapCoords.lng!; }
 
       const res = await createListing(data);
       navigate(`/listings/${res.data.id}`);
@@ -118,6 +122,22 @@ export default function CreateListing() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
               <CityInput required value={form.city} onChange={(v) => update('city', v)} placeholder="Your city" />
+              <div className="mt-2">
+                <button type="button" onClick={() => setShowMap(s => !s)} className="text-xs text-indigo-600 hover:underline">
+                  {showMap ? 'Hide map' : '+ Pin exact location on map (optional)'}
+                </button>
+                {showMap && (
+                  <div className="mt-2">
+                    <MapPicker
+                      mode="pick"
+                      lat={mapCoords.lat}
+                      lng={mapCoords.lng}
+                      onLocationChange={(lat, lng) => setMapCoords({ lat, lng })}
+                      onClear={() => setMapCoords({ lat: null, lng: null })}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

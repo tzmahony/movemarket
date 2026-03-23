@@ -5,6 +5,7 @@ import { getListings, createBundle } from '../api';
 import type { Listing } from '../types';
 import ImageUpload from '../components/ImageUpload';
 import CityInput from '../components/CityInput';
+import MapPicker from '../components/MapPicker';
 
 export default function CreateBundle() {
   const { user, loading: authLoading } = useAuth();
@@ -21,6 +22,8 @@ export default function CreateBundle() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [showMap, setShowMap] = useState(false);
+  const [mapCoords, setMapCoords] = useState<{ lat: number | null; lng: number | null }>({ lat: null, lng: null });
 
   useEffect(() => {
     if (authLoading) return;
@@ -69,6 +72,7 @@ export default function CreateBundle() {
         listing_ids: Array.from(selectedIds),
       };
       if (!form.image_url) delete payload.image_url;
+      if (mapCoords.lat !== null) { payload.latitude = mapCoords.lat; payload.longitude = mapCoords.lng!; }
       const res = await createBundle(payload);
       navigate(`/bundles/${res.data.id}`);
     } catch (err: any) {
@@ -133,6 +137,22 @@ export default function CreateBundle() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
               <CityInput required value={form.city} onChange={(v) => setForm((p) => ({ ...p, city: v }))} />
+              <div className="mt-2">
+                <button type="button" onClick={() => setShowMap(s => !s)} className="text-xs text-indigo-600 hover:underline">
+                  {showMap ? 'Hide map' : '+ Pin exact location on map (optional)'}
+                </button>
+                {showMap && (
+                  <div className="mt-2">
+                    <MapPicker
+                      mode="pick"
+                      lat={mapCoords.lat}
+                      lng={mapCoords.lng}
+                      onLocationChange={(lat, lng) => setMapCoords({ lat, lng })}
+                      onClear={() => setMapCoords({ lat: null, lng: null })}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

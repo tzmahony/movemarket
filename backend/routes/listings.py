@@ -1,3 +1,4 @@
+import math
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -10,6 +11,14 @@ from schemas import ListingCreate, ListingUpdate, ListingResponse
 from auth import get_current_user, optional_current_user
 
 router = APIRouter()
+
+
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    R = 6371.0
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    return R * 2 * math.asin(math.sqrt(a))
 
 
 def _listing_to_response(listing: Listing, current_user: Optional[User], db: Session) -> dict:
@@ -35,6 +44,9 @@ def list_listings(
     max_price: Optional[float] = None,
     search: Optional[str] = None,
     status_filter: Optional[str] = Query("available", alias="status"),
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    radius_km: Optional[float] = None,
     skip: int = 0,
     limit: int = 20,
     current_user: Optional[User] = Depends(optional_current_user),
@@ -43,7 +55,7 @@ def list_listings(
     query = db.query(Listing)
     if status_filter:
         query = query.filter(Listing.status == status_filter)
-    if city:
+    if city and lat is None:
         query = query.filter(Listing.city.ilike(f"%{city}%"))
     if category:
         query = query.filter(Listing.category == category)
@@ -60,6 +72,19 @@ def list_listings(
                 Listing.description.ilike(f"%{search}%"),
             )
         )
+    if lat is not None and lng is not None and radius_km is not None:
+        delta_lat = radius_km / 111.0
+        delta_lng = radius_km / (111.0 * math.cos(math.radians(lat)))
+        query = query.filter(
+            Listing.latitude.isnot(None),
+            Listing.longitude.isnot(None),
+            Listing.latitude.between(lat - delta_lat, lat + delta_lat),
+            Listing.longitude.between(lng - delta_lng, lng + delta_lng),
+        )
+        candidates = query.order_by(Listing.created_at.desc()).all()
+        candidates = [c for c in candidates if _haversine_km(lat, lng, c.latitude, c.longitude) <= radius_km]
+        page = candidates[skip: skip + limit]
+        return [_listing_to_response(l, current_user, db) for l in page]
     query = query.order_by(Listing.urgent.desc(), Listing.created_at.desc())
     listings = query.offset(skip).limit(limit).all()
     return [_listing_to_response(l, current_user, db) for l in listings]

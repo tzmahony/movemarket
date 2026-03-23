@@ -53,6 +53,8 @@ class Listing(Base):
     status = Column(String(20), default="available")
     urgent = Column(Boolean, default=False)
     move_out_date = Column(Date, nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="listings")
@@ -68,6 +70,8 @@ class Bundle(Base):
     discount_percentage = Column(Integer, default=10)
     city = Column(String(100), nullable=False)
     image_url = Column(String(500), nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="bundles")
@@ -87,6 +91,8 @@ class MoveAnnouncement(Base):
     looking_for = Column(String(500), nullable=True)
     budget_range = Column(String(50), nullable=True)
     image_url = Column(String(500), nullable=True)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="move_announcements")

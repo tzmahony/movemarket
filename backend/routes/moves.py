@@ -1,3 +1,4 @@
+import math
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -12,16 +13,27 @@ from auth import get_current_user
 router = APIRouter()
 
 
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    R = 6371.0
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2
+    return R * 2 * math.asin(math.sqrt(a))
+
+
 @router.get("/", response_model=list[MoveResponse])
 def list_moves(
     city: Optional[str] = None,
     move_type: Optional[str] = None,
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    radius_km: Optional[float] = None,
     skip: int = 0,
     limit: int = 20,
     db: Session = Depends(get_db),
 ):
     query = db.query(MoveAnnouncement)
-    if city:
+    if city and lat is None:
         query = query.filter(
             or_(
                 MoveAnnouncement.to_city.ilike(f"%{city}%"),
@@ -30,6 +42,19 @@ def list_moves(
         )
     if move_type:
         query = query.filter(MoveAnnouncement.move_type == move_type)
+    if lat is not None and lng is not None and radius_km is not None:
+        delta_lat = radius_km / 111.0
+        delta_lng = radius_km / (111.0 * math.cos(math.radians(lat)))
+        query = query.filter(
+            MoveAnnouncement.latitude.isnot(None),
+            MoveAnnouncement.longitude.isnot(None),
+            MoveAnnouncement.latitude.between(lat - delta_lat, lat + delta_lat),
+            MoveAnnouncement.longitude.between(lng - delta_lng, lng + delta_lng),
+        )
+        candidates = query.order_by(MoveAnnouncement.move_date.asc()).all()
+        candidates = [c for c in candidates if _haversine_km(lat, lng, c.latitude, c.longitude) <= radius_km]
+        page = candidates[skip: skip + limit]
+        return page
     moves = query.order_by(MoveAnnouncement.move_date.asc()).offset(skip).limit(limit).all()
     return moves
 

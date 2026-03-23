@@ -60,6 +60,8 @@ class ListingCreate(BaseModel):
     image_url: Optional[str] = None
     urgent: bool = False
     move_out_date: Optional[date] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class ListingUpdate(BaseModel):
@@ -73,6 +75,8 @@ class ListingUpdate(BaseModel):
     urgent: Optional[bool] = None
     move_out_date: Optional[date] = None
     status: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class ListingResponse(BaseModel):
@@ -90,6 +94,8 @@ class ListingResponse(BaseModel):
     status: str
     urgent: bool
     move_out_date: Optional[date] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     created_at: datetime
     user: UserResponse
     is_saved: bool = False
@@ -104,6 +110,8 @@ class BundleCreate(BaseModel):
     city: str
     listing_ids: list[int]
     image_url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class BundleResponse(BaseModel):
@@ -116,6 +124,8 @@ class BundleResponse(BaseModel):
     discount_percentage: int
     city: str
     image_url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     created_at: datetime
     listings: list[ListingResponse]
     total_price: float
@@ -134,6 +144,8 @@ class MoveCreate(BaseModel):
     looking_for: Optional[str] = None
     budget_range: Optional[str] = None
     image_url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class MoveResponse(BaseModel):
@@ -149,6 +161,8 @@ class MoveResponse(BaseModel):
     looking_for: Optional[str] = None
     budget_range: Optional[str] = None
     image_url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     created_at: datetime
     user: UserResponse
 

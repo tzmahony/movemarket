@@ -5,6 +5,7 @@ import { getListings } from '../api';
 import ListingCard from '../components/ListingCard';
 import { useAuth } from '../context/AuthContext';
 import CityInput from '../components/CityInput';
+import MapPicker from '../components/MapPicker';
 
 const CATEGORIES = ['', 'furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['', 'new', 'like new', 'good', 'fair', 'poor'];
@@ -25,13 +26,21 @@ export default function Listings() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const limit = 12;
+  const [mapMode, setMapMode] = useState(false);
+  const [mapLocation, setMapLocation] = useState<{ lat: number | null; lng: number | null; radius: number }>({ lat: null, lng: null, radius: 10 });
 
   const fetchListings = async (reset = false) => {
     setLoading(true);
     const currentSkip = reset ? 0 : skip;
     try {
       const params: any = { skip: currentSkip, limit };
-      if (filters.city) params.city = filters.city;
+      if (mapMode && mapLocation.lat !== null) {
+        params.lat = mapLocation.lat;
+        params.lng = mapLocation.lng!;
+        params.radius_km = mapLocation.radius;
+      } else if (!mapMode && filters.city) {
+        params.city = filters.city;
+      }
       if (filters.category) params.category = filters.category;
       if (filters.condition) params.condition = filters.condition;
       if (filters.min_price) params.min_price = Number(filters.min_price);
@@ -83,56 +92,91 @@ export default function Listings() {
 
       {/* Filters */}
       <form onSubmit={handleFilter} className="bg-white rounded-lg shadow-md p-4 mb-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-3">
+        <div className="flex flex-wrap gap-3 items-start">
           <input
             type="text"
             placeholder="Search..."
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
+            className="flex-1 min-w-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
           />
-          <CityInput
-            value={filters.city}
-            onChange={(v) => updateFilter('city', v)}
-            placeholder="City"
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm w-full"
-          />
-          <select
-            value={filters.category}
-            onChange={(e) => updateFilter('category', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
-          >
-            <option value="">All Categories</option>
-            {CATEGORIES.filter(Boolean).map((c) => (
-              <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
-            ))}
-          </select>
-          <select
-            value={filters.condition}
-            onChange={(e) => updateFilter('condition', e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
-          >
-            <option value="">All Conditions</option>
-            {CONDITIONS.filter(Boolean).map((c) => (
-              <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
-            ))}
-          </select>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              placeholder="Min $"
-              value={filters.min_price}
-              onChange={(e) => updateFilter('min_price', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
-            />
-            <input
-              type="number"
-              placeholder="Max $"
-              value={filters.max_price}
-              onChange={(e) => updateFilter('max_price', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
-            />
+          <div className={mapMode ? 'w-full' : 'min-w-32'}>
+            <div className="flex flex-col gap-2">
+              <div className="flex rounded-lg border border-gray-300 overflow-hidden text-sm w-fit">
+                <button
+                  type="button"
+                  onClick={() => setMapMode(false)}
+                  className={`px-3 py-2 ${!mapMode ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                >
+                  City
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMapMode(true)}
+                  className={`px-3 py-2 border-l border-gray-300 ${mapMode ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                >
+                  Map
+                </button>
+              </div>
+              {!mapMode ? (
+                <CityInput
+                  value={filters.city}
+                  onChange={(v) => updateFilter('city', v)}
+                  placeholder="City"
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm w-full"
+                />
+              ) : (
+                <MapPicker
+                  mode="filter"
+                  lat={mapLocation.lat}
+                  lng={mapLocation.lng}
+                  radius={mapLocation.radius}
+                  onLocationChange={(lat, lng) => setMapLocation(prev => ({ ...prev, lat, lng }))}
+                  onRadiusChange={(km) => setMapLocation(prev => ({ ...prev, radius: km }))}
+                />
+              )}
+            </div>
           </div>
+          {!mapMode && (
+            <>
+              <select
+                value={filters.category}
+                onChange={(e) => updateFilter('category', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
+              >
+                <option value="">All Categories</option>
+                {CATEGORIES.filter(Boolean).map((c) => (
+                  <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                ))}
+              </select>
+              <select
+                value={filters.condition}
+                onChange={(e) => updateFilter('condition', e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
+              >
+                <option value="">All Conditions</option>
+                {CONDITIONS.filter(Boolean).map((c) => (
+                  <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                ))}
+              </select>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  placeholder="Min $"
+                  value={filters.min_price}
+                  onChange={(e) => updateFilter('min_price', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
+                />
+                <input
+                  type="number"
+                  placeholder="Max $"
+                  value={filters.max_price}
+                  onChange={(e) => updateFilter('max_price', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm"
+                />
+              </div>
+            </>
+          )}
           <button
             type="submit"
             className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-medium text-sm"
