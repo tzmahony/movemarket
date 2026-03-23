@@ -5,7 +5,7 @@ export const uploadFile = (file: File) => {
   const formData = new FormData();
   formData.append('file', file);
   const token = localStorage.getItem('token');
-  return axios.post<{ url: string }>('/uploads/', formData, {
+  return axios.post<{ url: string }>('/api/uploads/', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

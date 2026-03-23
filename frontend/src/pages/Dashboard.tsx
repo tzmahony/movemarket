@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import type { Listing, Bundle, MoveAnnouncement, Conversation } from '../types';
-import { getListings, getBundles, getMoveMatches, getSavedListings, getConversations } from '../api';
+import { getListings, getBundles, getMoves, getMoveMatches, getSavedListings, getConversations } from '../api';
 import ListingCard from '../components/ListingCard';
 import BundleCard from '../components/BundleCard';
 import MoveCard from '../components/MoveCard';
@@ -19,6 +19,7 @@ export default function Dashboard() {
 
   const [myListings, setMyListings] = useState<Listing[]>([]);
   const [myBundles, setMyBundles] = useState<Bundle[]>([]);
+  const [myMoves, setMyMoves] = useState<MoveAnnouncement[]>([]);
   const [matches, setMatches] = useState<MoveAnnouncement[]>([]);
   const [savedItems, setSavedItems] = useState<Listing[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -32,12 +33,14 @@ export default function Dashboard() {
     Promise.all([
       getListings({ limit: 100 }).catch(() => ({ data: [] })),
       getBundles({ limit: 100 }).catch(() => ({ data: [] })),
+      getMoves({ limit: 100 }).catch(() => ({ data: [] })),
       getMoveMatches().catch(() => ({ data: [] })),
       getSavedListings().catch(() => ({ data: [] })),
       getConversations().catch(() => ({ data: [] })),
-    ]).then(([listingsRes, bundlesRes, matchesRes, savedRes, convsRes]) => {
+    ]).then(([listingsRes, bundlesRes, movesRes, matchesRes, savedRes, convsRes]) => {
       setMyListings((listingsRes.data as Listing[]).filter((l) => l.user_id === user.id));
       setMyBundles((bundlesRes.data as Bundle[]).filter((b) => b.user_id === user.id));
+      setMyMoves((movesRes.data as MoveAnnouncement[]).filter((m) => m.user_id === user.id));
       setMatches(matchesRes.data as MoveAnnouncement[]);
       setSavedItems(savedRes.data as Listing[]);
       setConversations(convsRes.data as Conversation[]);
@@ -112,6 +115,30 @@ export default function Dashboard() {
           View Profile
         </Link>
       </div>
+
+      {/* My move announcements */}
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-gray-900">Your Move Announcements</h2>
+          <Link to="/moves/new" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+            + Post Move
+          </Link>
+        </div>
+        {myMoves.length > 0 ? (
+          <div className="space-y-3">
+            {myMoves.map((move) => (
+              <MoveCard key={move.id} move={move} />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg border border-dashed border-gray-300 p-8 text-center">
+            <p className="text-gray-400 mb-3">You haven't posted any move announcements yet.</p>
+            <Link to="/moves/new" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+              Post your move &rarr;
+            </Link>
+          </div>
+        )}
+      </section>
 
       {/* Move matches */}
       {matches.length > 0 && (
