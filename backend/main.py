@@ -7,6 +7,7 @@ from routes import auth, users, listings, bundles, moves, messages
 app = FastAPI(
     title="MoveMarket API",
     description="E-commerce platform for people moving in/out of cities",
+    redirect_slashes=False,
 )
 
 app.add_middleware(
