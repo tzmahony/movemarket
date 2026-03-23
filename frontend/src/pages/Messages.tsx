@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { format, formatDistanceToNow } from 'date-fns';
 
 export default function Messages() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { userId } = useParams<{ userId?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -24,12 +24,13 @@ export default function Messages() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) {
       navigate('/login');
       return;
     }
     loadConversations();
-  }, [user, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, authLoading, navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (activeUserId) {
@@ -90,7 +91,7 @@ export default function Messages() {
     navigate(`/messages/${uid}`, { replace: true });
   };
 
-  if (!user) return null;
+  if (authLoading || !user) return null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
