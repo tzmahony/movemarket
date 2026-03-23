@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createMove } from '../api';
 import ImageUpload from '../components/ImageUpload';
+import CityInput from '../components/CityInput';
 
 const CATEGORIES = ['furniture', 'electronics', 'kitchen', 'bedroom', 'bathroom', 'office', 'books', 'clothing', 'sports', 'other'];
 
@@ -116,23 +117,11 @@ export default function CreateMove() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">From City</label>
-              <input
-                type="text"
-                value={form.from_city}
-                onChange={(e) => update('from_city', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                placeholder="Leaving from..."
-              />
+              <CityInput value={form.from_city} onChange={(v) => update('from_city', v)} placeholder="Leaving from..." />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">To City</label>
-              <input
-                type="text"
-                value={form.to_city}
-                onChange={(e) => update('to_city', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                placeholder="Moving to..."
-              />
+              <CityInput value={form.to_city} onChange={(v) => update('to_city', v)} placeholder="Moving to..." />
             </div>
           </div>
 

@@ -5,6 +5,7 @@ import { getUser, getListings, getBundles, getSavedListings, updateProfile } fro
 import ListingCard from '../components/ListingCard';
 import BundleCard from '../components/BundleCard';
 import ImageUpload from '../components/ImageUpload';
+import CityInput from '../components/CityInput';
 import { useAuth } from '../context/AuthContext';
 import { format } from 'date-fns';
 
@@ -119,8 +120,7 @@ export default function Profile() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                <input type="text" value={editForm.city} onChange={(e) => setEditForm((p) => ({ ...p, city: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" />
+                <CityInput value={editForm.city} onChange={(v) => setEditForm((p) => ({ ...p, city: v }))} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Move Status</label>

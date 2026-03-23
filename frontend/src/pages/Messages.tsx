@@ -118,8 +118,15 @@ export default function Messages() {
                     activeUserId === conv.other_user.id ? 'bg-indigo-50' : ''
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900 text-sm truncate">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    {conv.other_user.avatar_url ? (
+                      <img src={conv.other_user.avatar_url} alt={conv.other_user.name} className="w-7 h-7 rounded-full object-cover shrink-0" />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs shrink-0">
+                        {conv.other_user.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="font-medium text-gray-900 text-sm truncate flex-1">
                       {conv.other_user.name}
                     </span>
                     <div className="flex items-center gap-1 shrink-0 ml-2">
@@ -148,9 +155,13 @@ export default function Messages() {
             <>
               {/* Header */}
               <div className="px-5 py-4 border-b border-gray-200 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
-                  {activeUser.name.charAt(0).toUpperCase()}
-                </div>
+                {activeUser.avatar_url ? (
+                  <img src={activeUser.avatar_url} alt={activeUser.name} className="w-9 h-9 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
+                    {activeUser.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div>
                   <p className="font-semibold text-gray-900">{activeUser.name}</p>
                   {activeUser.city && (

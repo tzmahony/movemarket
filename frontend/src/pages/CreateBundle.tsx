@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { getListings, createBundle } from '../api';
 import type { Listing } from '../types';
 import ImageUpload from '../components/ImageUpload';
+import CityInput from '../components/CityInput';
 
 export default function CreateBundle() {
   const { user, loading: authLoading } = useAuth();
@@ -131,13 +132,7 @@ export default function CreateBundle() {
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-              <input
-                type="text"
-                required
-                value={form.city}
-                onChange={(e) => setForm((p) => ({ ...p, city: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              />
+              <CityInput required value={form.city} onChange={(v) => setForm((p) => ({ ...p, city: v }))} />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

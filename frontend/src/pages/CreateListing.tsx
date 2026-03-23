@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createListing } from '../api';
 import ImageUpload from '../components/ImageUpload';
+import CityInput from '../components/CityInput';
 
 const CATEGORIES = ['furniture', 'electronics', 'clothing', 'kitchen', 'books', 'sports', 'decor', 'boxes', 'other'];
 const CONDITIONS = ['new', 'like new', 'good', 'fair', 'poor'];
@@ -116,14 +117,7 @@ export default function CreateListing() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-              <input
-                type="text"
-                required
-                value={form.city}
-                onChange={(e) => update('city', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-                placeholder="Your city"
-              />
+              <CityInput required value={form.city} onChange={(v) => update('city', v)} placeholder="Your city" />
             </div>
           </div>
 
