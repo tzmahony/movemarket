@@ -6,7 +6,7 @@ import type { Listing } from '../types';
 import ImageUpload from '../components/ImageUpload';
 
 export default function CreateBundle() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [myListings, setMyListings] = useState<Listing[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
@@ -22,6 +22,7 @@ export default function CreateBundle() {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) {
       navigate('/login');
       return;
@@ -34,7 +35,7 @@ export default function CreateBundle() {
         setMyListings(mine);
       })
       .finally(() => setFetching(false));
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   const toggleSelect = (id: number) => {
     setSelectedIds((prev) => {

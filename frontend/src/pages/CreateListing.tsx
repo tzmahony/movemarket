@@ -8,7 +8,7 @@ const CATEGORIES = ['furniture', 'electronics', 'clothing', 'kitchen', 'books', 
 const CONDITIONS = ['new', 'like new', 'good', 'fair', 'poor'];
 
 export default function CreateListing() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -25,6 +25,7 @@ export default function CreateListing() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  if (authLoading) return null;
   if (!user) {
     navigate('/login');
     return null;

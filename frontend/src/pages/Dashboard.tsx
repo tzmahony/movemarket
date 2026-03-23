@@ -14,7 +14,7 @@ const moveTypeLabel: Record<string, string> = {
 };
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [myListings, setMyListings] = useState<Listing[]>([]);
@@ -26,6 +26,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
     if (!user) {
       navigate('/login');
       return;
@@ -45,7 +46,7 @@ export default function Dashboard() {
       setSavedItems(savedRes.data as Listing[]);
       setConversations(convsRes.data as Conversation[]);
     }).finally(() => setLoading(false));
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   if (!user) return null;
 

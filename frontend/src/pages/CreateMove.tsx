@@ -7,7 +7,7 @@ import ImageUpload from '../components/ImageUpload';
 const CATEGORIES = ['furniture', 'electronics', 'kitchen', 'bedroom', 'bathroom', 'office', 'books', 'clothing', 'sports', 'other'];
 
 export default function CreateMove() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -23,6 +23,7 @@ export default function CreateMove() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  if (authLoading) return null;
   if (!user) {
     navigate('/login');
     return null;
