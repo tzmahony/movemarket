@@ -9,7 +9,10 @@
       "Bash(curl -s http://localhost:8000/docs)",
       "Bash(find \"/Users/tianmahony/Documents/Coding & Projects/Python_projects/Moving_out_project/frontend\" -type f)",
       "Bash(npm install:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(find \"/Users/tianmahony/Documents/Coding & Projects/Python_projects/Moving_out_project\" -type d -name \"frontend\")",
+      "Bash(find \"/Users/tianmahony/Documents/Coding & Projects/Python_projects/Moving_out_project\" -type d -name \"src\")",
+      "Bash(ls -la \"/Users/tianmahony/Documents/Coding & Projects/Python_projects/Moving_out_project/frontend/\")"
     ]
   }
 }

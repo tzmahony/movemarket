@@ -8,5 +8,37 @@ html {
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-slate-50 text-slate-900 antialiased;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Hero dot grid pattern */
+.dot-grid {
+  background-image: radial-gradient(circle at 1px 1px, rgb(99 102 241 / 0.18) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+/* Gradient text utility */
+.text-gradient {
+  @apply bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent;
+}
+
+/* Card base — consistent across listing/bundle/move cards */
+.card {
+  @apply bg-white rounded-2xl ring-1 ring-slate-200/80 shadow-sm transition-all duration-300;
+}
+.card:hover {
+  @apply shadow-xl -translate-y-1;
+}
+
+/* Nav link underline animation */
+.nav-link {
+  @apply relative text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150;
+}
+.nav-link::after {
+  content: '';
+  @apply absolute left-0 -bottom-0.5 w-0 h-0.5 bg-indigo-600 rounded-full transition-all duration-200;
+}
+.nav-link:hover::after {
+  @apply w-full;
 }

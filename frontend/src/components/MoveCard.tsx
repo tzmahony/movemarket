@@ -8,52 +8,58 @@ interface Props {
 
 export default function MoveCard({ move }: Props) {
   const isMovingIn = move.move_type.toLowerCase().includes('in');
-  const typeBadge = isMovingIn
-    ? 'bg-green-100 text-green-700'
-    : 'bg-orange-100 text-orange-700';
 
   const lookingForTags = move.looking_for
     ? move.looking_for.split(',').map((t) => t.trim()).filter(Boolean)
     : [];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${typeBadge}`}>
-              {isMovingIn ? 'Moving In' : 'Moving Out'}
+    <div className="bg-white rounded-2xl ring-1 ring-slate-200/80 shadow-sm p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          {/* Header row */}
+          <div className="flex items-center gap-2.5 mb-3">
+            <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+              isMovingIn
+                ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
+                : 'bg-orange-50 text-orange-700 ring-1 ring-orange-200'
+            }`}>
+              {isMovingIn ? '↓ Moving in' : '↑ Moving out'}
             </span>
-            <span className="text-sm text-gray-400">
+            <span className="text-xs text-slate-400 font-medium">
               {format(new Date(move.move_date), 'MMM d, yyyy')}
             </span>
           </div>
 
-          <h3 className="font-semibold text-gray-900">
-            {move.user?.name || 'Someone'}
-          </h3>
-
-          <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-            {move.from_city && <span>{move.from_city}</span>}
-            {move.from_city && move.to_city && (
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            )}
-            {move.to_city && <span>{move.to_city}</span>}
+          {/* Name + route */}
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
+              {(move.user?.name || 'S').charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <span className="font-semibold text-slate-900 text-sm">{move.user?.name || 'Someone'}</span>
+              {(move.from_city || move.to_city) && (
+                <div className="flex items-center gap-1 text-xs text-slate-500 mt-0.5">
+                  {move.from_city && <span>{move.from_city}</span>}
+                  {move.from_city && move.to_city && (
+                    <svg className="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  )}
+                  {move.to_city && <span>{move.to_city}</span>}
+                </div>
+              )}
+            </div>
           </div>
 
           {move.message && (
-            <p className="text-sm text-gray-500 mt-2 line-clamp-2">{move.message}</p>
+            <p className="text-sm text-slate-500 line-clamp-2 mb-3">{move.message}</p>
           )}
 
           {lookingForTags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
+            <div className="flex flex-wrap gap-1.5 mb-2">
               {lookingForTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full"
-                >
+                <span key={tag} className="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full ring-1 ring-indigo-100 font-medium">
                   {tag}
                 </span>
               ))}
@@ -61,23 +67,17 @@ export default function MoveCard({ move }: Props) {
           )}
 
           {move.budget_range && (
-            <p className="text-xs text-gray-400 mt-2">
-              Budget: {move.budget_range}
-            </p>
+            <p className="text-xs text-slate-400 font-medium">Budget: {move.budget_range}</p>
           )}
         </div>
 
-        <div className="ml-4 shrink-0 flex flex-col items-end gap-2">
+        <div className="shrink-0 flex flex-col items-end gap-3">
           {move.image_url && (
-            <img
-              src={move.image_url}
-              alt="Move photo"
-              className="w-16 h-16 rounded-lg object-cover shrink-0 mt-1"
-            />
+            <img src={move.image_url} alt="Move photo" className="w-16 h-16 rounded-xl object-cover ring-1 ring-slate-200" />
           )}
           <Link
             to={`/messages?user=${move.user_id}`}
-            className="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="bg-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-indigo-500 transition-colors shadow-sm whitespace-nowrap"
           >
             Contact
           </Link>
